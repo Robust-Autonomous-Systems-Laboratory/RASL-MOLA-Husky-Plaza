@@ -52,13 +52,10 @@
 	<script type="module">
 
 		window.viewer = new Potree.Viewer(document.getElementById("potree_render_area"));
-
-		viewer.setEDLEnabled(false);
-		viewer.setFOV(60);
-		viewer.setPointBudget(1_000_000);
-		viewer.loadSettingsFromURL();
-		viewer.setBackground("skybox");
-
+		viewer.setPointBudget(2_000_000);
+		viewer.setEDLEnabled(true);
+		viewer.setFOV(90);
+		viewer.setBackground("black");
 		viewer.setDescription("EE5531 Point Cloud Map");
 
 		viewer.loadGUI(() => {
@@ -70,7 +67,7 @@
 
 		// STUDENTS: Replace YOUR_MAP_NAME below with the folder name created by
 		// scripts/2_process_map.sh (e.g. "rosbag2_2026_04_09-19_50_35_0.mcap")
-		Potree.loadPointCloud("./pointclouds/rosbag2_2026_04_09-19_50_35_0.mcap/cloud.js", "map", e => {
+		Potree.loadPointCloud("./pointclouds//cloud.js", "map", e => {
 			let scene = viewer.scene;
 			let pointcloud = e.pointcloud;
 			let material = pointcloud.material;
