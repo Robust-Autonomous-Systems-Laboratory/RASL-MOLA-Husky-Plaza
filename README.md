@@ -283,6 +283,9 @@ which makes Potree read garbage. Files ending in `.zip` are served uncompressed,
 `potree.js` has been patched to load the `.zip` names. If you run PotreeConverter by hand, do
 this rename yourself.
 
+(The bundled `potree.js` also omits the `content-type: multipart/byteranges` request header that
+stock Potree sends with its Range requests — GitHub Pages now rejects those GETs with HTTP 400.)
+
 ---
 
 ## Step 5 — Inspect the Cropped Map

@@ -66402,7 +66402,7 @@ void main() {
 				}else {
 					let response = await fetch(urlOctree, {
 						headers: {
-							'content-type': 'multipart/byteranges',
+							// No content-type header: GitHub Pages returns 400 for GETs that carry one.
 							'Range': `bytes=${first}-${last}`,
 						},
 					});
@@ -66599,7 +66599,7 @@ void main() {
 
 			let response = await fetch(hierarchyPath, {
 				headers: {
-					'content-type': 'multipart/byteranges',
+					// No content-type header: GitHub Pages returns 400 for GETs that carry one.
 					'Range': `bytes=${first}-${last}`,
 				},
 			});
