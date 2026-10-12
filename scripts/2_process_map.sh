@@ -79,6 +79,14 @@ LD_LIBRARY_PATH="${REPO_DIR}:${LD_LIBRARY_PATH}" \
   "${NAME}.laz" \
   -o "${REPO_DIR}/pointclouds/${NAME}"
 
+# GitHub Pages gzips .bin files and then applies HTTP Range requests to the
+# compressed stream, which breaks Potree's byte-range reads. Publish the binary
+# files with a .zip extension (served uncompressed); the bundled potree.js
+# loads octree.bin.zip and hierarchy.bin.zip.
+for f in octree hierarchy; do
+  mv -f "${REPO_DIR}/pointclouds/${NAME}/${f}.bin" "${REPO_DIR}/pointclouds/${NAME}/${f}.bin.zip"
+done
+
 echo ""
 echo "================================================================"
 echo "Done! Potree tiles written to: pointclouds/${NAME}/"

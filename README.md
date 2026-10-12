@@ -268,14 +268,20 @@ standard LAS LiDAR format. Compression typically achieves 3–4× size reduction
 A raw LAZ file can't be streamed efficiently in a browser — loading millions of points at
 once would be too slow. PotreeConverter organizes the points into an **octree**: a 3D tree
 structure that lets the browser load coarse detail first and add fine detail as you zoom in.
-It produces a folder of small tile files (`cloud.js` + numbered bin files) that Potree
-streams on demand.
+It produces a folder containing `metadata.json`, `hierarchy.bin`, and `octree.bin`; Potree
+reads just the pieces of `octree.bin` it needs (via HTTP Range requests) as you navigate.
 
 The script runs this command automatically:
 ```bash
 LD_LIBRARY_PATH=. ./PotreeConverter <your-map>.laz -o pointclouds/<your-map-name>
 ```
 (`LD_LIBRARY_PATH=.` is needed so PotreeConverter can find `liblaszip.so` in the repo root.)
+
+The script then renames `octree.bin` → `octree.bin.zip` and `hierarchy.bin` → `hierarchy.bin.zip`.
+GitHub Pages gzip-compresses `.bin` files and applies Range requests to the *compressed* data,
+which makes Potree read garbage. Files ending in `.zip` are served uncompressed, and the bundled
+`potree.js` has been patched to load the `.zip` names. If you run PotreeConverter by hand, do
+this rename yourself.
 
 ---
 
@@ -341,10 +347,10 @@ viewer.setPointBudget(2_000_000);
 Replace `YOUR_MAP_NAME` with the folder name printed at the end of Step 4:
 ```javascript
 // Change this line:
-Potree.loadPointCloud("./pointclouds/YOUR_MAP_NAME/cloud.js", "map", e => {
+Potree.loadPointCloud("./pointclouds/YOUR_MAP_NAME/metadata.json", "map", e => {
 
 // To (example):
-Potree.loadPointCloud("./pointclouds/rosbag2_2026_04_09-19_50_35_0.mcap/cloud.js", "map", e => {
+Potree.loadPointCloud("./pointclouds/rosbag2_2026_04_09-19_50_35_0.mcap/metadata.json", "map", e => {
 ```
 
 Update the description:
@@ -372,7 +378,8 @@ Wait ~60 seconds, then visit `https://robust-autonomous-systems-laboratory.githu
 | `No module named 'laspy'` | `sudo apt install python3-laspy python3-laszip` |
 | `mm2ply` error about `raw` layer | Normal — ignore it. The `map_cropped.ply` file is written before the error. |
 | `PotreeConverter: cannot find liblaszip.so` | Run the script from the repo root — the script sets `LD_LIBRARY_PATH` for you |
-| Blank page on GitHub Pages | Check that `pointclouds/<name>/cloud.js` exists and the name in `index.html` matches exactly |
+| Blank page on GitHub Pages | Check that `pointclouds/<name>/metadata.json` exists and the name in `index.html` matches exactly |
+| Viewer loads but no points / console decode errors | `octree.bin` and `hierarchy.bin` must be renamed to `octree.bin.zip` / `hierarchy.bin.zip` (see Step 4) |
 | Point cloud loads but colors look washed out | Tighten `elevationRange` in `index.html` to match your actual Z bounds from `mm-info` |
 | Map looks correct in mm-viewer but PLY is empty | Check that `map_cropped` layer exists: run `mm-info *_cropped.mm` |
 

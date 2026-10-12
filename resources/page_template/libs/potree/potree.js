@@ -66386,7 +66386,10 @@ void main() {
 				let {byteOffset, byteSize} = node;
 
 
-				let urlOctree = `${this.url}/../octree.bin`;
+				// GitHub Pages gzips .bin files and applies Range requests to the compressed
+				// stream, which corrupts Potree 2.0 node reads. The octree is published as
+				// octree.bin.zip (a type Pages serves uncompressed); see scripts/2_process_map.sh.
+				let urlOctree = `${this.url}/../octree.bin.zip`;
 
 				let first = byteOffset;
 				let last = byteOffset + byteSize - 1n;
@@ -66589,7 +66592,7 @@ void main() {
 		async loadHierarchy(node){
 
 			let {hierarchyByteOffset, hierarchyByteSize} = node;
-			let hierarchyPath = `${this.url}/../hierarchy.bin`;
+			let hierarchyPath = `${this.url}/../hierarchy.bin.zip`; // see octree.bin.zip note above
 			
 			let first = hierarchyByteOffset;
 			let last = first + hierarchyByteSize - 1n;

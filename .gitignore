@@ -10,3 +10,4 @@ trajectory.tum
 #   git add pointclouds/ index.html
 #   git commit -m "Add my point cloud"
 pointclouds/
+__pycache__/
