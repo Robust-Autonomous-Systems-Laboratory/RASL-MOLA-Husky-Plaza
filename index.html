@@ -71,8 +71,8 @@
 			let scene = viewer.scene;
 			let pointcloud = e.pointcloud;
 			let material = pointcloud.material;
-			material.size = 1;
-			material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+			material.size = 2;
+			material.pointSizeType = Potree.PointSizeType.FIXED;
 			material.shape = Potree.PointShape.SPLAT;
 
 			material.activeAttributeName = "elevation";
